@@ -37,10 +37,9 @@ const adminFormSchema = toTypedSchema(
       .string({
         required_error: 'Required.',
       })
-      .regex(
-        (value) => /^[a-zA-Z]+[-'s]?[a-zA-Z ]+$/.test(value ?? ''),
-        'Name should contain only alphabets',
-      )
+      .regex(/^[a-zA-Z]+[-'s]?[a-zA-Z ]+$/, {
+        message: 'Name should contain only alphabets',
+      })
       .min(2, {
         message: 'Name must be at least 2 characters.',
       })
@@ -61,10 +60,9 @@ const adminFormSchema = toTypedSchema(
       .string({
         required_error: 'Required.',
       })
-      .regex(
-        (value) => /^[a-zA-Z]+[-'s]?[a-zA-Z ]+$/.test(value ?? ''),
-        'Mission should contain only alphabets',
-      )
+      .regex(/^[a-zA-Z]+[-'s]?[a-zA-Z ]+$/, {
+        message: 'Mission should contain only alphabets',
+      })
       .min(2, {
         message: 'Mission must be at least 2 characters.',
       })
@@ -75,10 +73,9 @@ const adminFormSchema = toTypedSchema(
       .string({
         required_error: 'Required.',
       })
-      .regex(
-        (value) => /^(www.)[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/.test(value ?? ''),
-        'Website should be a valid site (starting with www.*****)',
-      )
+      .regex(/^(www.)[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/, {
+        message: 'Website should be a valid site (starting with www.*****)',
+      })
       .min(10, {
         message: 'Website must be at least 10 characters.',
       })

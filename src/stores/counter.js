@@ -8,6 +8,7 @@ export const useCounterStore = defineStore('auth', () => {
     email: '',
     role: '',
     phone: '',
+    position: '',
   })
 
   const company = ref({

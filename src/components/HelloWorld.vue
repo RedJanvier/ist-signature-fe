@@ -12,8 +12,8 @@ defineProps({
     <h1 class="green">{{ msg }}</h1>
     <h3>
       You’ve successfully created a project with
-      <router-link to="https://vite.dev/" target="_blank" rel="noopener">Vite</a> +
-      <router-link to="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
+      <router-link to="https://vite.dev/" target="_blank" rel="noopener">Vite</router-link>
+      <router-link to="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</router-link>
     </h3>
   </div>
 </template>

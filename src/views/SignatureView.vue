@@ -102,7 +102,6 @@ const handleCopy = () => {
         </a>
       </p>
     </div>
-    <Separator class="my-6" />
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
       <div class="flex-1 lg:max-w-2xl">
         <div class="space-y-6">
