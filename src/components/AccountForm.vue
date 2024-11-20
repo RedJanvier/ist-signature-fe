@@ -11,25 +11,29 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/components/ui/toast'
+import { useStore } from '@/stores/counter'
 
 import { toTypedSchema } from '@vee-validate/zod'
 import { h } from 'vue'
 import * as z from 'zod'
 
-// const accountFormSchema = toTypedSchema(
-//   z.object({
-//     phone: z
-//       .string({
-//         required_error: 'Required.',
-//       })
-//       .min(10, {
-//         message: 'Phone must be at least 10 characters.',
-//       })
-//       .max(13, {
-//         message: 'Phone must not be longer than 13 characters.',
-//       }),
-//   }),
-// )
+const store = useStore()
+const { user, company } = store.global
+const isAdmin = user.role === 'ADMIN'
+const accountFormSchema = toTypedSchema(
+  z.object({
+    phone: z
+      .string({
+        required_error: 'Required.',
+      })
+      .min(10, {
+        message: 'Phone must be at least 10 characters.',
+      })
+      .max(13, {
+        message: 'Phone must not be longer than 13 characters.',
+      }),
+  }),
+)
 
 const adminFormSchema = toTypedSchema(
   z.object({
@@ -53,15 +57,12 @@ const adminFormSchema = toTypedSchema(
       .min(2, {
         message: 'Address must be at least 2 characters.',
       })
-      .max(30, {
-        message: 'Address must not be longer than 30 characters.',
+      .max(50, {
+        message: 'Address must not be longer than 50 characters.',
       }),
     mission: z
       .string({
         required_error: 'Required.',
-      })
-      .regex(/^[a-zA-Z]+[-'s]?[a-zA-Z ]+$/, {
-        message: 'Mission should contain only alphabets',
       })
       .min(2, {
         message: 'Mission must be at least 2 characters.',
@@ -100,12 +101,21 @@ async function onSubmit(values) {
 </script>
 
 <template>
-  <Form :validation-schema="adminFormSchema" class="space-y-8" @submit="onSubmit">
-    <FormField v-slot="{ componentField }" name="phone">
+  <Form
+    :validation-schema="isAdmin ? adminFormSchema : accountFormSchema"
+    class="space-y-8"
+    @submit="onSubmit"
+  >
+    <FormField v-if="!isAdmin" v-slot="{ componentField }" name="phone">
       <FormItem>
         <FormLabel>Phone Number</FormLabel>
         <FormControl class="bg-white">
-          <Input type="tel" placeholder="+25078*******" v-bind="componentField" />
+          <Input
+            type="tel"
+            placeholder="+25078*******"
+            :defaultValue="user && user.phone"
+            v-bind="componentField"
+          />
         </FormControl>
         <FormDescription>
           This is the phone number that will be included in your email signature.
@@ -114,22 +124,28 @@ async function onSubmit(values) {
       </FormItem>
     </FormField>
 
-    <FormField v-slot="{ componentField }" name="name">
+    <FormField v-if="isAdmin" v-slot="{ componentField }" name="name">
       <FormItem>
         <FormLabel>Company Name</FormLabel>
         <FormControl class="bg-white">
-          <Input type="text" placeholder="IST Africa" v-bind="componentField" />
+          <Input
+            type="text"
+            placeholder="IST Africa"
+            :defaultValue="company && company.name"
+            v-bind="componentField"
+          />
         </FormControl>
         <FormMessage />
       </FormItem>
     </FormField>
 
-    <FormField v-slot="{ componentField }" name="address">
+    <FormField v-if="isAdmin" v-slot="{ componentField }" name="address">
       <FormItem>
         <FormLabel>Company Address</FormLabel>
         <FormControl class="bg-white">
           <Input
             type="text"
+            :defaultValue="company && company.address"
             placeholder="Kigali - KG 28 Ave, 57 - Rwanda"
             v-bind="componentField"
           />
@@ -138,12 +154,13 @@ async function onSubmit(values) {
       </FormItem>
     </FormField>
 
-    <FormField v-slot="{ componentField }" name="mission">
+    <FormField v-if="isAdmin" v-slot="{ componentField }" name="mission">
       <FormItem>
         <FormLabel>Mission statement</FormLabel>
         <FormControl class="bg-white">
           <Input
             type="text"
+            :defaultValue="company && company.mission"
             placeholder="Empowering learning, every day and everywhere"
             v-bind="componentField"
           />
@@ -152,11 +169,16 @@ async function onSubmit(values) {
       </FormItem>
     </FormField>
 
-    <FormField v-slot="{ componentField }" name="website">
+    <FormField v-if="isAdmin" v-slot="{ componentField }" name="website">
       <FormItem>
         <FormLabel>Company website</FormLabel>
         <FormControl class="bg-white">
-          <Input type="text" placeholder="www.ist.com" v-bind="componentField" />
+          <Input
+            type="text"
+            placeholder="www.ist.com"
+            :defaultValue="company && company.website"
+            v-bind="componentField"
+          />
         </FormControl>
         <FormMessage />
       </FormItem>

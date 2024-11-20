@@ -17,7 +17,7 @@ import UserAuthForm from '@/components/AuthForm.vue'
       Register
     </router-link>
     <div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-      <div class="absolute inset-0 bg-zinc-900" />
+      <div class="absolute inset-0 bg-[var(--main-color)]" />
       <div class="relative z-20 flex items-center text-lg font-medium">
         <img src="@/assets/logo-white.png" alt="company-logo" width="100px" />
       </div>

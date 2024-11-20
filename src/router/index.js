@@ -41,7 +41,31 @@ const router = createRouter({
       component: SignatureView,
       meta: { layout: 'dashboard' },
     },
+    {
+      path: '/users',
+      name: 'users',
+      component: SignatureView,
+      meta: { layout: 'dashboard' },
+    },
   ],
 })
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/signin', '/signup', '/'];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem('user');
+
+  if (authRequired && !loggedIn) {
+    next('/signin');
+  }
+  else if (loggedIn && publicPages.includes(to.path)) {
+    const user = JSON.parse(loggedIn);
+    if (user.role === 'ADMIN') router.push('/users')
+    if (user.role === 'USER') router.push('/signature')
+  }
+  else {
+    next();
+  }
+});
 
 export default router

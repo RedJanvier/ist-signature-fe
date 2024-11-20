@@ -16,4 +16,20 @@
 import Menu from '@/components/AppMenu.vue'
 import Nav from '@/components/AppNav.vue'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useStore } from '@/stores/counter'
+import { companyService } from '@/stores/services'
+
+const store = useStore()
+
+async function fetchCompany() {
+  try {
+    const res = await companyService.get()
+    const company = res.data
+    localStorage.setItem('company', JSON.stringify(company))
+    store.setCompany(company)
+  } catch (error) {
+    console.log(error)
+  }
+}
+fetchCompany()
 </script>

@@ -1,28 +1,32 @@
 <script setup>
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
+import { useStore } from '@/stores/counter'
 
-const user = {
-  name: 'Denis Niwemugisha',
-  phone: '+25078********',
-  position: 'General Employee',
-}
-const company = {
-  name: 'IST Africa',
-  address: 'Kigali · KG 28 Ave, 57 · Kigali',
-  mission: 'Empowering learning, every day and everywhere.',
-  website: 'www.ist.com',
-}
+const store = useStore()
+const { user, company } = store.global
+
+// const user = {
+//   name: 'Denis Niwemugisha',
+//   phone: '+25078********',
+//   position: 'General Employee',
+// }
+// const company = {
+//   name: 'IST Africa',
+//   address: 'Kigali · KG 28 Ave, 57 · Kigali',
+//   mission: 'Empowering learning, every day and everywhere.',
+//   website: 'www.ist.com',
+// }
 
 const textToCopy = `
 <table style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333">
   <tr>
     <td>
-      <strong style="font-size: 16px; color: #000">${user.name}</strong><br />
+      <strong style="font-size: 16px; color: #000">${user.firstname} ${user.lastname}</strong><br />
       <em style="color: #555">${user.position}</em><br />
     </td>
   </tr>
-  <tr>
+  <tr style="${user.phone ? '' : 'display: none'}">
     <td style="padding-top: 8px">
       <img
         src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9ImJsYWNrIiBkPSJNNi42MiAxMC43OWMxLjQ0IDIuODMgMy43NiA1LjE1IDYuNTkgNi41OWwyLjItMi4yYy4yOC0uMjguNjctLjM2IDEuMDItLjI1YzEuMTIuMzcgMi4zMi41NyAzLjU3LjU3YTEgMSAwIDAgMSAxIDFWMjBhMSAxIDAgMCAxLTEgMUExNyAxNyAwIDAgMSAzIDRhMSAxIDAgMCAxIDEtMWgzLjVhMSAxIDAgMCAxIDEgMWMwIDEuMjUuMiAyLjQ1LjU3IDMuNTdjLjExLjM1LjAzLjc0LS4yNSAxLjAyeiIvPjwvc3ZnPg=="

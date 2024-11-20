@@ -1,5 +1,10 @@
 <script setup>
 import AccountForm from '@/components/AccountForm.vue'
+import { useStore } from '@/stores/counter'
+
+const store = useStore()
+const { user } = store.global
+const isAdmin = user.role === 'ADMIN'
 </script>
 
 <template>
@@ -7,7 +12,11 @@ import AccountForm from '@/components/AccountForm.vue'
     <div class="space-y-0.5">
       <h2 class="text-2xl font-bold tracking-tight">Settings</h2>
       <p class="text-muted-foreground">
-        Manage your account settings and set phone of preferences.
+        {{
+          !isAdmin
+            ? 'Manage your account settings and set phone of preferences.'
+            : 'Manage your company info which will be used on all signatures.'
+        }}
       </p>
     </div>
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">

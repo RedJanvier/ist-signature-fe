@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
+import { useRouter } from 'vue-router'
+import { useStore } from '@/stores/counter'
+import { authService } from '@/stores/services'
 
 let settingsLinks = ref([
   {
@@ -12,13 +15,13 @@ let settingsLinks = ref([
   },
 ])
 
-const overviewLinks = [
-  {
-    id: 1,
-    text: 'Dashboard',
-    link: '/dashboard',
-    icon: 'mdi:view-dashboard',
-  },
+let overviewLinks = [
+  // {
+  //   id: 1,
+  //   text: 'Dashboard',
+  //   link: '/dashboard',
+  //   icon: 'mdi:view-dashboard',
+  // },
   {
     id: 2,
     text: 'Signature',
@@ -40,6 +43,17 @@ const overviewLinks = [
     icon: 'mdi:settings-outline',
   },
 ]
+const router = useRouter()
+const store = useStore()
+const user = store.global.user
+overviewLinks = overviewLinks.filter((link) => !link.role || (link.role && link.role === user.role))
+
+function handleLogout() {
+  authService.logout()
+  store.setUser(null)
+  store.setCompany(null)
+  router.push('/signin')
+}
 </script>
 <template>
   <aside
@@ -64,19 +78,20 @@ const overviewLinks = [
       <p class="text-xs text-gray-600 pb-2 min-w-40 uppercase">Danger</p>
       <ul class="grid gap-4">
         <li :key="item.id" v-for="item in settingsLinks">
-          <a
-            :href="item.link"
+          <button
+            @click="handleLogout"
             class="flex gap-2 items-center"
             :style="item.danger ? 'color: red;' : ''"
           >
             <Icon :icon="item.icon" width="28" height="28" />
             <span class="text-lg">{{ item.text }}</span>
-          </a>
+          </button>
         </li>
       </ul>
     </div>
   </aside>
 </template>
+
 <style scoped>
 .router-link-active svg {
   color: var(--main-color);
