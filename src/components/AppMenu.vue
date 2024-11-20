@@ -59,7 +59,7 @@ function handleLogout() {
   <aside
     class="flex flex-col bg-white p-6 box-border md:static md:w-auto md:h-screen w-full fixed bottom-0 z-10 left-0"
   >
-    <router-link to="/dashboard" class="text-4xl md:flex gap-4 items-center mb-6 hidden">
+    <router-link to="/" class="text-4xl md:flex gap-4 items-center mb-6 hidden">
       <img src="@/assets/logo-blue.jpeg" alt="" width="100px" />
       <h1>Signatures</h1>
     </router-link>

@@ -16,8 +16,18 @@ const pinia = createTestingPinia({
     store: {
       global: {
         loggedIn: false,
-        user: null,
-        company: null,
+        user: {
+          firstname: 'Denis',
+          lastname: 'Niwemugisha',
+          phone: '+25078********',
+          position: 'General Employee',
+        },
+        company: {
+          name: 'IST Africa',
+          address: 'Kigali · KG 28 Ave, 57 · Kigali',
+          mission: 'Empowering learning, every day and everywhere.',
+          website: 'www.ist.com',
+        },
       },
     },
   },

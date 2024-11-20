@@ -3,6 +3,7 @@ import SignupView from '@/views/SignupView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import SignatureView from '@/views/SignatureView.vue'
+import UsersView from '@/views/UsersView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,7 +45,7 @@ const router = createRouter({
     {
       path: '/users',
       name: 'users',
-      component: SignatureView,
+      component: UsersView,
       meta: { layout: 'dashboard' },
     },
   ],

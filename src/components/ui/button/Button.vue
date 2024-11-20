@@ -2,7 +2,6 @@
 import { cn } from '@/lib/utils'
 import { Primitive } from 'radix-vue'
 import { buttonVariants } from '.'
-import LucideSpinner from '@/assets/spinner.svg'
 
 const props = defineProps({
   variant: { type: null, required: false },
@@ -20,7 +19,6 @@ const props = defineProps({
     :as-child="asChild"
     :class="cn(buttonVariants({ variant, size }), props.class)"
   >
-    <LucideSpinner v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
     <slot />
   </Primitive>
 </template>

@@ -2,7 +2,13 @@
 import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
-import { user } from '../data/courses'
+import { useStore } from '@/stores/counter'
+import { authService } from '@/stores/services'
+import { useRouter } from 'vue-router'
+
+const store = useStore()
+const router = useRouter()
+const { user } = store.global
 
 const open = ref(false)
 const settingsLinks = ref([
@@ -14,6 +20,13 @@ const settingsLinks = ref([
     danger: true,
   },
 ])
+
+function handleLogout() {
+  authService.logout()
+  store.setUser(null)
+  store.setCompany(null)
+  router.push('/signin')
+}
 </script>
 
 <template>
@@ -21,35 +34,37 @@ const settingsLinks = ref([
     <nav
       class="flex justify-around items-center gap-4 px-6 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2"
     >
-      <router-link to="/dashboard" class="text-xl flex gap-4 items-center md:hidden">
+      <router-link to="/" class="text-xl flex gap-4 items-center md:hidden">
         <img src="@/assets/logo-blue.jpeg" alt="" width="50px" />
         <h1>Signatures</h1>
       </router-link>
 
-      <div class="user flex gap-3 flex-1 justify-end">
+      <div class="user flex flex-1 justify-end relative">
         <Popover v-model:open="open">
           <PopoverTrigger as-child>
-            <div class="user-image rounded-full overflow-hidden w-[36px] h-[36px]">
-              <img
-                :src="`https://api.dicebear.com/9.x/open-peeps/svg?clothingColor=8fa7df,9ddadb,78e185&backgroundColor=b6e3f4,c0aede,d1d4f9&seed=${user.firstName}`"
-                alt="profile"
-              />
-            </div>
-            <b class="text-nowrap self-center hidden md:block"
-              >{{ user.firstName }} {{ user.lastName }}</b
-            >
+            <button class="user flex gap-3">
+              <div class="user-image rounded-full overflow-hidden w-[36px] h-[36px]">
+                <img
+                  :src="`https://api.dicebear.com/9.x/open-peeps/svg?clothingColor=8fa7df,9ddadb,78e185&backgroundColor=b6e3f4,c0aede,d1d4f9&seed=${user.firstName}`"
+                  alt="profile"
+                />
+              </div>
+              <b class="text-nowrap self-center hidden md:block"
+                >{{ user.firstname }} {{ user.lastname }}</b
+              >
+            </button>
           </PopoverTrigger>
-          <PopoverContent class="w-[200px] p-0 md:hidden block">
+          <PopoverContent class="w-[150px] p-0">
             <ul class="grid gap-4">
-              <li :key="item.id" v-for="item in settingsLinks" class="py-3 px-2">
-                <a
-                  :href="item.link"
+              <li :key="item.id" v-for="item in settingsLinks" class="py-2 px-1">
+                <button
+                  @click="handleLogout"
                   class="flex gap-2 items-center"
                   :style="item.danger ? 'color: red;' : ''"
                 >
-                  <Icon :icon="item.icon" width="28" height="28" />
-                  <span class="text-lg">{{ item.text }}</span>
-                </a>
+                  <Icon :icon="item.icon" width="15" height="15" />
+                  <span class="">{{ item.text }}</span>
+                </button>
               </li>
             </ul>
           </PopoverContent>

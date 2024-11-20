@@ -1,12 +1,34 @@
-import axios from "axios";
+import { toast } from '@/components/ui/toast';
+import axiosInstance from 'axios';
 
 const API_URL = "http://localhost:8080/api/v1";
 
-function authHeader() {
-  const user = JSON.parse(localStorage.getItem('user'));
+const axios = axiosInstance.create({
+  baseURL: API_URL,
+  timeout: 10000,
+});
 
-  if (user && user.token) {
-    return { Authorization: 'Bearer ' + user.token };
+// Add a response interceptor
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Handle 403 error globally
+    if (error.response && error.response.status === 403) {
+      toast({ title: "An error occurred! Please login", variant: 'destructive' })
+      authService.logout()
+      window.location.reload();
+    }
+
+    // Further error handling
+    return Promise.reject(error);
+  }
+);
+
+function authHeader() {
+  const token = JSON.parse(localStorage.getItem('access_token'));
+
+  if (token) {
+    return { Authorization: 'Bearer ' + token, "Content-Type": 'application/json' };
   } else {
     return {};
   }
@@ -32,6 +54,8 @@ class AuthService {
 
   logout() {
     localStorage.removeItem('user');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
   }
 
   register(user) {
@@ -55,7 +79,7 @@ class UserService {
   }
 
   updatePosition(userId, position) {
-    return axios.patch(API_URL + '/users/position/' + userId, position, { headers: authHeader() });
+    return axios.put(API_URL + '/users/position/' + userId, position, { headers: authHeader() });
   }
 
   getAllUsers() {

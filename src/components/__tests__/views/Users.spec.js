@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import { mount } from '@vue/test-utils'
-import SettingsView from '@/views/SettingsView.vue'
 import { createPinia, setActivePinia } from 'pinia';
 import { useStore } from '@/stores/counter';
 import { createTestingPinia } from '@pinia/testing';
+import UsersView from '@/views/UsersView.vue';
 const pinia = createTestingPinia({
   createSpy: vi.fn,
   initialState: {
@@ -28,14 +28,14 @@ const pinia = createTestingPinia({
   }, // Allow real action implementations to run
 });
 
-describe('Settings.vue', () => {
+describe('UsersView.vue', () => {
   beforeEach(() => {
     // Set up a fresh Pinia instance for each test
     setActivePinia(createPinia());
     useStore(pinia);
   });
   it('renders properly', () => {
-    const wrapper = mount(SettingsView)
-    expect(wrapper.text()).toContain('Settings')
+    const wrapper = mount(UsersView)
+    expect(wrapper.text()).toContain('Users List')
   })
 })

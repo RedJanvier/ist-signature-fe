@@ -15,8 +15,8 @@ const layout = computed(() => (route.meta.layout === 'dashboard' ? DashboardLayo
 const user = localStorage.getItem('user')
 if (user) store.setUser(JSON.parse(user))
 
-const company = localStorage.getItem('company')
-if (company) store.setCompany(JSON.parse(company))
+// const company = localStorage.getItem('company')
+// if (company) store.setCompany(JSON.parse(company))
 </script>
 
 <template>

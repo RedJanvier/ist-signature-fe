@@ -2,31 +2,22 @@
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
 import { useStore } from '@/stores/counter'
+import { computed } from 'vue'
 
 const store = useStore()
-const { user, company } = store.global
 
-// const user = {
-//   name: 'Denis Niwemugisha',
-//   phone: '+25078********',
-//   position: 'General Employee',
-// }
-// const company = {
-//   name: 'IST Africa',
-//   address: 'Kigali · KG 28 Ave, 57 · Kigali',
-//   mission: 'Empowering learning, every day and everywhere.',
-//   website: 'www.ist.com',
-// }
+const { value: user } = computed(() => store.global.user)
+const { value: company } = computed(() => store.global.company)
 
 const textToCopy = `
 <table style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333">
   <tr>
     <td>
-      <strong style="font-size: 16px; color: #000">${user.firstname} ${user.lastname}</strong><br />
-      <em style="color: #555">${user.position}</em><br />
+      <strong style="font-size: 16px; color: #000">${user && user.firstname} ${user && user.lastname}</strong><br />
+      <em style="color: #555">${user && user.position}</em><br />
     </td>
   </tr>
-  <tr style="${user.phone ? '' : 'display: none'}">
+  <tr style="${user && user.phone ? '' : 'display: none'}">
     <td style="padding-top: 8px">
       <img
         src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9ImJsYWNrIiBkPSJNNi42MiAxMC43OWMxLjQ0IDIuODMgMy43NiA1LjE1IDYuNTkgNi41OWwyLjItMi4yYy4yOC0uMjguNjctLjM2IDEuMDItLjI1YzEuMTIuMzcgMi4zMi41NyAzLjU3LjU3YTEgMSAwIDAgMSAxIDFWMjBhMSAxIDAgMCAxLTEgMUExNyAxNyAwIDAgMSAzIDRhMSAxIDAgMCAxIDEtMWgzLjVhMSAxIDAgMCAxIDEgMWMwIDEuMjUuMiAyLjQ1LjU3IDMuNTdjLjExLjM1LjAzLjc0LS4yNSAxLjAyeiIvPjwvc3ZnPg=="
@@ -37,15 +28,15 @@ const textToCopy = `
       <a
         :href="['tel:', user.phone].join('')"
         style="color: rgb(85, 85, 85); text-decoration: none"
-        >${user.phone}</a
+        >${user && user.phone}</a
       >
     </td>
   </tr>
   <tr>
     <td style="padding-top: 10px">
-      <strong>${company.name}</strong
+      <strong>${company && company.name}</strong
       ><br />
-      ${company.address}
+      ${company && company.address}
     </td>
   </tr>
   <tr>
@@ -58,13 +49,13 @@ const textToCopy = `
       <a
         :href="['https://', company.website].join('')"
         style="color: #0056b3; text-decoration: none"
-        >${company.website}</a
+        >${company && company.website}</a
       >
     </td>
   </tr>
   <tr>
     <td style="padding-top: 10px; font-style: italic; color: #555">
-      &quot;${company.mission}&quot;
+      &quot;${company && company.mission}&quot;
     </td>
   </tr>
 </table>`

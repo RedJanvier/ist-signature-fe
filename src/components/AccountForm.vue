@@ -12,12 +12,16 @@ import {
 import { Input } from '@/components/ui/input'
 import { toast } from '@/components/ui/toast'
 import { useStore } from '@/stores/counter'
+import { companyService, userService } from '@/stores/services'
 
 import { toTypedSchema } from '@vee-validate/zod'
-import { h } from 'vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import * as z from 'zod'
 
+const isLoading = ref(false)
 const store = useStore()
+const router = useRouter()
 const { user, company } = store.global
 const isAdmin = user.role === 'ADMIN'
 const accountFormSchema = toTypedSchema(
@@ -49,54 +53,91 @@ const adminFormSchema = toTypedSchema(
       })
       .max(30, {
         message: 'Name must not be longer than 30 characters.',
-      }),
-    address: z
-      .string({
-        required_error: 'Required.',
       })
+      .default(!company ? '' : company.name),
+    address: z
+      .string()
       .min(2, {
         message: 'Address must be at least 2 characters.',
       })
       .max(50, {
         message: 'Address must not be longer than 50 characters.',
-      }),
-    mission: z
-      .string({
-        required_error: 'Required.',
       })
+      .default(!company ? '' : company.address),
+    mission: z
+      .string()
       .min(2, {
         message: 'Mission must be at least 2 characters.',
       })
       .max(300, {
         message: 'Mission must not be longer than 300 characters.',
-      }),
+      })
+      .default(!company ? '' : company.mission),
     website: z
-      .string({
-        required_error: 'Required.',
-      })
-      .regex(/^(www.)[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/, {
-        message: 'Website should be a valid site (starting with www.*****)',
-      })
+      .string()
       .min(10, {
         message: 'Website must be at least 10 characters.',
       })
       .max(30, {
         message: 'Website must not be longer than 30 characters.',
-      }),
+      })
+      .regex(/^(www.)[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/, {
+        message: 'Website should be a valid site (starting with www.*****)',
+      })
+      .default(!company ? '' : company.website),
   }),
 )
 
-// https://github.com/logaretm/vee-validate/issues/3521
-// https://github.com/logaretm/vee-validate/discussions/3571
 async function onSubmit(values) {
-  toast({
-    title: 'You submitted the following values:',
-    description: h(
-      'pre',
-      { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' },
-      h('code', { class: 'text-white' }, JSON.stringify(values, null, 2)),
-    ),
-  })
+  isLoading.value = true
+  if (!isAdmin) handlePhone(values)
+  else handleCompany(values)
+}
+async function handlePhone(values) {
+  let res = null
+  try {
+    res = await userService.updatePhone(values)
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.response.data.error ||
+      error.toString()
+    toast({ title: message, variant: 'destructive' })
+    isLoading.value = false
+    return
+  }
+
+  if (res.status === 200) {
+    router.push('/')
+    const newUser = { ...user, ...values }
+    store.setUser(newUser)
+    localStorage.setItem('user', JSON.stringify(newUser))
+    toast({ title: 'Updated your phone successfully!' })
+  }
+  isLoading.value = false
+}
+async function handleCompany(values) {
+  let res = null
+  try {
+    res = await companyService.update(values)
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.response.data.error ||
+      error.toString()
+    toast({ title: message, variant: 'destructive' })
+    isLoading.value = false
+    return
+  }
+
+  if (res.status === 200) {
+    router.push('/')
+    const newCompany = { ...company, ...values }
+    store.setCompany(newCompany)
+    localStorage.setItem('company', JSON.stringify(newCompany))
+    toast({ title: 'Updated company info successfully!' })
+  }
+  isLoading.value = false
 }
 </script>
 
